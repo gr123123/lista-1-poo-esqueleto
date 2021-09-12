@@ -1,5 +1,7 @@
 package br.inatel.cdg.algebra.scene;
 
+import br.inatel.cdg.algebra.reta.Ponto;
+import br.inatel.cdg.algebra.reta.Reta;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -10,43 +12,73 @@ import javafx.stage.Stage;
 
 public class ScenePrincipal {
 
-    private Button btnTeste, btnCalcCoefLinear; //Button representa botoes
-    private Label labelTeste1; //Label representam rótulos
-    private TextField textField1, textField2; //TextField Representam áreas de texto
+    private Button btnCalculaCoeficienteAngular, btnCalculaCoeficienteLinear;
+    private Label lblP1X,lblP1Y,lblP2X,lblP2Y;
+    private TextField txtP1X,txtP1Y,txtP2X,txtP2Y, txtCoeficienteAngular, txtCoeficienteLinear;
 
     public void criaScenePrincipal(Stage stage){
+        lblP1X = new Label("Ponto P1.X");
+        txtP1X = new TextField();
 
-        //Criando os labels para os pontos e os campos de texto para os dados
-        labelTeste1 = new Label("Digite alguma coisa"); //rótulos
-        textField1 = new TextField(); //área de texto onde vc digitara alguma coisa
+        lblP1Y = new Label("Ponto P1.Y");
+        txtP1Y = new TextField();
 
+        lblP2X = new Label("Ponto P2.X");
+        txtP2X = new TextField();
 
-        //HBox é usado para agrupar elementos horizontalmente
-        HBox grupoHorizontal = new HBox(labelTeste1, textField1); //Passamos no construtor todos os elementos. Você poderá criar vários grupos horizontais
+        lblP2Y = new Label("Ponto P2.Y");
+        txtP2Y = new TextField();
 
+        HBox hboxP1X = new HBox(lblP1X, txtP1X);
+        HBox hboxP1Y = new HBox(lblP1Y, txtP1Y);
+        HBox hboxP2X = new HBox(lblP2X, txtP2X);
+        HBox hboxP2Y = new HBox(lblP2Y, txtP2Y);
 
-        //Agora vamos criar a area que mostrará o que foi digitado
-        textField2 = new TextField();
-        textField2.setEditable(false);//vamos deixar false para apenas mostrar texto
-        textField2.setText("Sua frase aparecerá aqui");
+        VBox vboxEntradaCoord = new VBox(hboxP1X,hboxP1Y,hboxP2X,hboxP2Y);
 
-        //Criamos o botão
-        btnTeste = new Button("Executar Ação");
-        //Criamos a ação que o botão responderá as ser pressionado
-        btnTeste.setOnAction(evento -> {
-            //Aqui dentro é a ação que será executado ao pressionar o botão
-            textField2.setText(textField1.getText());//Acessamos o componente textField1, pegamos o texto e colocaos em textField2
+        txtCoeficienteAngular = new TextField();
+        txtCoeficienteAngular.setEditable(false);
+        txtCoeficienteAngular.setText("Coeficiente Angular: ");
+
+        txtCoeficienteLinear = new TextField();
+        txtCoeficienteLinear.setEditable(false);
+        txtCoeficienteLinear.setText("Coeficiente Linear: ");
+
+        HBox hboxRespostas = new HBox(txtCoeficienteAngular, txtCoeficienteLinear);
+
+        btnCalculaCoeficienteAngular = new Button("Calcular Coeficiente Angular");
+        btnCalculaCoeficienteAngular.setOnAction(evento -> {
+            Reta reta = construirReta();
+            txtCoeficienteAngular.setText("Coeficiente Angular: " + reta.calculaCoeficienteAngular());
         });
 
-        //VBox é usada para agrupar elementos verticalmente
-        //No construtor passamos todos os elementos que serão agrupados, que podem ser outros grupos
-        VBox layoutFinal = new VBox(grupoHorizontal, textField2,btnTeste);//Aqui vamos agrupar verticalmente o grupo (Label + Texto) o Botao e A area que aparecer o texto digitado
-        //Criamos a Scene
-        Scene scene = new Scene(layoutFinal, 300 , 200);
+        btnCalculaCoeficienteLinear = new Button("Calcular Coeficiente Linear");
+        btnCalculaCoeficienteLinear.setOnAction(evento -> {
+            Reta reta = construirReta();
+            txtCoeficienteLinear.setText("Coeficiente Linear: " + reta.calculaCoeficienteLinear());
+        });
 
-        stage.setTitle("Software Para Calculos de Álgebra Linear");
+        HBox hBoxBotoes = new HBox(btnCalculaCoeficienteAngular, btnCalculaCoeficienteLinear);
+
+
+        VBox layoutFinal = new VBox(vboxEntradaCoord,hboxRespostas, hBoxBotoes);
+
+        Scene scene = new Scene(layoutFinal, 400 , 300);
+
+        stage.setTitle("Calcula coeficiente linear e angular da reta");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private Reta construirReta(){
+        Ponto p1 = new Ponto(Double.parseDouble(txtP1X.getText()),
+                Double.parseDouble(txtP1Y.getText()));
+
+        Ponto p2 = new Ponto(Double.parseDouble(txtP2X.getText()),
+                Double.parseDouble(txtP2Y.getText()));
+
+        Reta reta = new Reta(p1,p2);
+        return reta;
     }
 
 }
